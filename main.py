@@ -1,33 +1,46 @@
-from components.convert_excel_to_JSON import convert_excel_to_JSON
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel
-from PyQt5.QtGui import QIcon, QFont
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QApplication, QMainWindow
+from widgets.table import get_widget_table
+from components.get_JSON_data import get_JSON_data
 
-def window():
-    # Initialize PyQT enviroment
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("JSON Table Viewer")
+        self.setGeometry(100, 100, 1000, 600)
+        
+        # Get JSON data
+        json_data = get_JSON_data()
+        
+        # Create the table widget using the function
+        widget_table = get_widget_table(json_data)
+        self.setCentralWidget(widget_table)
+
+
+def main():
     app = QApplication(sys.argv)
-    widget = QWidget()
-
-    # Create label
-    textLabel = QLabel(widget)
-    textLabel.setText("works!")
-    textLabel.move(8, 8)
-
-    # Set global font
-    font = QFont('Arial', 16)
-    textLabel.setFont(font)
-
-    # Set default values for spawn the window
-    widget.setGeometry(960, 540, 320, 200)
-    widget.setWindowTitle("Excel Extracter")
-    widget.show()
-
-    widget.setStyleSheet("QWidget {background: #90EE90;}")
-
+    
+    # Set application-wide styles
+    app.setStyleSheet("""
+        QTableView {
+            gridline-color: #d0d0d0;
+            background-color: white;
+            alternate-background-color: #f6f6f6;
+        }
+        QHeaderView::section {
+            background-color: #e0e0e0;
+            padding: 4px;
+            border: 1px solid #c0c0c0;
+            font-weight: bold;
+        }
+    """)
+    
+    window = MainWindow()
+    window.show()
+    
     sys.exit(app.exec_())
 
-if __name__ == '__main__':
-    window()
 
-convert_excel_to_JSON('../Elenents.xlsx')
+if __name__ == "__main__":
+    main()
