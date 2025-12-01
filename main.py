@@ -2,6 +2,7 @@ import sys
 import os
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QTabWidget
 from widgets.table import get_widget_table
+from widgets.pdf import get_pdf_export_widget
 from components.get_JSON_data import get_JSON_data
 from components.DragAndDrop import DragDropWindow
 
@@ -23,6 +24,7 @@ class MainWindow(QMainWindow):
         
         # Check if data.json file exists
         data_json_exists = os.path.exists('data.json')
+        json_data = None
         
         # Tab 1: JSON Table (only if data.json exists)
         if data_json_exists:
@@ -42,6 +44,13 @@ class MainWindow(QMainWindow):
         drag_drop_widget = DragDropWindow()
         tab_widget.addTab(drag_drop_widget, "Drag & Drop Files")
         self.drag_drop_widget = drag_drop_widget
+        
+        # Tab 3: PDF Export (only if we have JSON data)
+        if json_data:
+            # Auto-save as data.pdf in current directory
+            pdf_export_widget = get_pdf_export_widget(json_data, auto_save=True)
+            tab_widget.addTab(pdf_export_widget, "Export to PDF")
+            self.pdf_export_widget = pdf_export_widget
         
         # If no data.json, set Drag & Drop as the first/only tab
         if not data_json_exists:
